@@ -16,12 +16,12 @@ public class AppiumSettings {
 
     private static AndroidDriver wd;
     private static final String TESTDROID_SERVER = "http://127.0.0.1";
-    public static String app = "D:/BusAPK/school_bus_app_1.0.1-debug-dev-f94349a.apk";  //set the link to app
+    public static String app = "D:/BusAPK/school_bus_app_1.0.1-debug-dev-ab27506.apk";  //set the link to app
     public static String appPackage = "com.smartnavigationsystems.ourschoolbus"; // Set your application's appPackage
     public static String activity = "com.smartnavigationsystems.ourschoolbus.presentation.views.activities.SplashActivity_";
     public static String device = "Android";
-    public static String deviceName = "IVGAUGQGRSEESKY9";  //my devise name
-    public static String platformVersion = "4.4.2";  //set mobile device OS version
+    public static String deviceName = "014E233E1101A01D";  //my devise name
+    public static String platformVersion = "4.3";  //set mobile device OS version
     public static String platformName = "Android";  // set device platform
 
 
