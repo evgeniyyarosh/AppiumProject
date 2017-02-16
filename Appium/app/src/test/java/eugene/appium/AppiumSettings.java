@@ -34,6 +34,7 @@ public class AppiumSettings {
         dc.setCapability("app", app);
         dc.setCapability("app-package", appPackage);
         dc.setCapability("app-activity", activity);
+        dc.setCapability("noReset", true);
 
 
 

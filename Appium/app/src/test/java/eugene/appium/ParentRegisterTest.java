@@ -1,5 +1,6 @@
 package eugene.appium;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -32,9 +33,16 @@ public class ParentRegisterTest {
         wd.findElement(By.id(BASEPATH + "name_text_input_edit_text")).sendKeys("ParentCreatedByAppium");
         wd.findElement(By.id(BASEPATH + "phone_number_edit_text")).sendKeys("13654811");
         wd.findElement(By.id(BASEPATH + "new_password_text_input_edit_text")).sendKeys("qweqwe");
+        wd.hideKeyboard();
         wd.findElement(By.id(BASEPATH + "retype_password_text_input_edit_text")).sendKeys("qweqwe");
+        wd.hideKeyboard();
+        wd.findElement(By.id(BASEPATH + "terms_conditions_checkbox")).click();
         wd.findElement(By.id(BASEPATH + "submit_button")).click();
-        wd.findElement(By.id(BASEPATH + "Registration request was created and pending!")).isDisplayed();
+        wd.findElement(By.name("Registration request was created and pending!")).isDisplayed();
     }
 
+    @AfterClass
+    public static void signOut(){
+        AppiumSettings.tearDown();
+    }
 }
