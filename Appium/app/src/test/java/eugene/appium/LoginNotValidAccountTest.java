@@ -14,13 +14,13 @@ import io.appium.java_client.android.AndroidDriver;
  */
 
 public class LoginNotValidAccountTest {
-    private static AndroidDriver wd;
+    private static AndroidDriver driver;
     private static final String BASEPATH = "com.smartnavigationsystems.ourschoolbus:id/";
 
     @BeforeClass
     public static void appiumInit(){
         try{
-            wd = AppiumSettings.setUp();
+            driver = AppiumSettings.setUp();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -28,14 +28,15 @@ public class LoginNotValidAccountTest {
 
     @Test
     public void loginApp(){
-        wd.findElement(By.id(BASEPATH + "phone_number_edit_text")).sendKeys("753357");
-        wd.findElement(By.id(BASEPATH + "password_text_input_edit_text")).sendKeys("qweqwe$$f");
-        wd.findElement(By.id(BASEPATH + "login_button")).click();
-        wd.findElement(By.name("You have entered invalid Phone or Password")).isDisplayed();
+        driver.findElement(By.id(BASEPATH + "phone_number_edit_text")).sendKeys("753357");
+        driver.findElement(By.id(BASEPATH + "password_text_input_edit_text")).sendKeys("qweqwe$$f");
+        driver.findElement(By.id(BASEPATH + "login_button")).click();
+        driver.findElement(By.name("You have entered invalid Phone or Password")).isDisplayed();
     }
 
     @AfterClass
     public static void signOut(){
+        driver.findElement(By.id("android:id/button1")).click();
         AppiumSettings.tearDown();
     }
 }

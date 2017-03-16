@@ -1,5 +1,6 @@
 package eugene.appium;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.MalformedURLException;
@@ -8,15 +9,18 @@ import java.util.concurrent.TimeUnit;
 
 import io.appium.java_client.android.AndroidDriver;
 
+import static java.lang.Math.random;
+import java.util.Random;
+
 /**
  * Created by eugene.iarosh on 1/19/2017.
  */
 
 public class AppiumSettings {
 
-    private static AndroidDriver wd;
+    private static AndroidDriver driver;
     private static final String TESTDROID_SERVER = "http://127.0.0.1";
-    public static String app = "D:/BusAPK/school_bus_app_1.0.1-debug-dev-ab27506.apk";  //set the link to app
+    public static String app = "D:/BusAPK/school_bus_app_2.1.4-debug-prod-732262e.apk";  //set the link to app
     public static String appPackage = "com.smartnavigationsystems.ourschoolbus"; // Set your application's appPackage
     public static String activity = "com.smartnavigationsystems.ourschoolbus.presentation.views.activities.SplashActivity_";
     public static String device = "Android";
@@ -40,16 +44,40 @@ public class AppiumSettings {
 
         // Created object of RemoteWebDriver will all set capabilities.
         // Set appium server address and port number in URL string.
-        wd = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), dc);
+        driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), dc);
 
-        wd.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 
-        return wd;
+        return driver;
     }
 
     public static void tearDown() {
-        if (wd != null) {
-            wd.quit();
+        if (driver != null) {
+            driver.quit();
         }
+    }
+
+    public static void logOutFromApplication(){
+        driver.findElement(By.xpath("//android.view.View[@resource-id='com.smartnavigationsystems.ourschoolbus:id/toolbar']/android.widget.ImageButton")).click();
+        driver.findElement(By.name("Logout")).click();
+        driver.findElement(By.name("Our School Bus")).isDisplayed();
+    }
+
+    public static String randomEmail() {
+        return "CreatedByAppium-" + random() + "@example.com";
+    }
+
+    public static String randomName() {
+
+        return "CombaineNotif-" + random();
+    }
+
+    public static int randomPhone(){
+        Random random = new Random();
+        int min = 111111;
+        int max = 999999;
+        int range = max - min;
+        int value = random.nextInt(range) + min;
+        return  value;
     }
 }
