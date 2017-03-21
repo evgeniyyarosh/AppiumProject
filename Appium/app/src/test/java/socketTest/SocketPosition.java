@@ -1,59 +1,84 @@
 package socketTest;
 
+import android.util.Log;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.net.URISyntaxException;
+import java.util.EventListener;
+import java.util.HashMap;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
+import rx.Subscription;
+import socketTest.events.BaseEvent;
+import socketTest.events.BusLocationEvent;
+import socketTest.events.RxBus;
+import socketTest.socketsettings.Constants;
 import socketTest.socketsettings.InitSocket;
+import socketTest.socketsettings.SocketManager;
+import socketTest.socketsettings.Timer;
 
 /**
  * Created by eugene.iarosh on 2/22/2017.
  */
 
-public class SocketPosition {
-    public void creatConnection(){
-        InitSocket initSocket = new InitSocket();
-        final Socket socket = initSocket.getSocket();
+public class SocketPosition implements SocketManager.TrackerSocketListener {
+    private Timer timer;
+    private SocketManager socketManager;
+    private static final String TOKEN = "FMcor5urJHeyZTJbicDbht3TNtg0Z0tFu2P7uegUQoaz6Yyj2Kb1muXoweze";
+    private HashMap <Integer, EventListener> eventListener;
+    private Socket socket;
 
-        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
 
-            @Override
-            public void call(Object... args) {
-                socket.emit("auth", "IDhPaUiJYf19BaCyKAZ4bSXljIquyUoKRrIkBpbI2zAQ4OFJIdARIsNXgUTg");
-                socket.disconnect();
-            }
+    @Before
+    public void init(){
+        timer = new Timer();
+    }
 
-        }).on("auth", new Emitter.Listener() {
+    @Test
+    public void firstTest() throws Exception {
 
-            @Override
-            public void call(Object... args) {
-                if (args != null && args.length > 0) {
-                    String response = args[0].toString();
+       try {
+            socket = IO.socket(Constants.BUS_SERVER_URL);
 
-                }
+        }catch (Exception e){}
+        socketManager = new SocketManager(TOKEN, this, socket);
+        socketManager.socketConnect();
+        eventListener = new HashMap<>();
+        eventListener.put(BaseEvent.BUS_LOCATION_EVENT,this::busLocation);
+        subscribeOnBusLocationEvent(eventListener);
+        while (!timer.expired(20)){
 
-            }
+        }
+        socketManager.socketDisconnect();
+    }
 
-        }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+    @Override
+    public void onAuthSuccessfully() {
+    }
 
-            @Override
-            public void call(Object... args) {}
+    public void busLocation(BaseEvent<BusLocationEvent> event) {
+        BusLocationEvent busLocationEvent = event.getData();
 
-        });
-        socket.connect();
+        if (busLocationEvent == null) {
+            return;
+        }
+    }
+
+    public interface EventListener {
+        void event(BaseEvent baseEvent);
+    }
+
+    private void subscribeOnBusLocationEvent(HashMap <Integer, EventListener> eventListener) {
+        Subscription rxBusSubscription = RxBus.instanceOf().getEvents()
+                .subscribe(event -> {
+                    if (eventListener.containsKey(event.getEventType())) {
+                        eventListener.get(event.getEventType()).event(event);
+                    }
+                }, Throwable::printStackTrace);
     }
 }
-/*
-socket.on("SetupMalls", new Emitter.Listener() {
-@Override
-public void call(Object... args) {
-        if (args != null && args.length > 0) {
-        String response = args[0].toString();
-
-        }
-        }
-        })*/

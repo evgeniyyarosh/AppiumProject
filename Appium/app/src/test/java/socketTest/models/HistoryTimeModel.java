@@ -1,4 +1,4 @@
-package com.smartnavigationsystems.ourschoolbus.sockets.models.request;
+package socketTest.models;
 
 import com.google.gson.annotations.SerializedName;
 

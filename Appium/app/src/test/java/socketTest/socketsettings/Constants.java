@@ -6,5 +6,5 @@ package socketTest.socketsettings;
 
 public class Constants {
     //public static final String CHAT_SERVER_URL = "https://socketio-chat.now.sh/";
-    public static final String BUS_SERVER_URL = "http://ourschoolbus.ae:9092/";
+    public static final String BUS_SERVER_URL = "http://traccar.itcraft.i-it.pro:9092";
 }

@@ -1,5 +1,4 @@
-package com.smartnavigationsystems.ourschoolbus.sockets.models;
-
+package socketTest.models;
 import com.google.gson.Gson;
 
 /**
@@ -14,7 +13,6 @@ public class BasePacketModel<T> {
     public T getData() {
         return data;
     }
-
     public void setData(T data) {
         this.data = data;
     }
