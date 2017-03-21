@@ -47,10 +47,13 @@ public class SocketPosition implements SocketManager.TrackerSocketListener {
 
         }catch (Exception e){}
         socketManager = new SocketManager(TOKEN, this, socket);
+        Thread.sleep(1000);
         socketManager.socketConnect();
-        eventListener = new HashMap<>();
+
+       /* eventListener = new HashMap<>();
         eventListener.put(BaseEvent.BUS_LOCATION_EVENT,this::busLocation);
-        subscribeOnBusLocationEvent(eventListener);
+        subscribeOnBusLocationEvent(eventListener);*/
+        timer.start();
         while (!timer.expired(20)){
 
         }

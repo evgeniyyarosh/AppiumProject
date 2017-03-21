@@ -27,10 +27,6 @@ public class SocketManager {
     private String token;
     private Socket socket;
 
-    public void setSocket(Socket socket) {
-        this.socket = socket;
-    }
-
 
 
     private Emitter.Listener authSocketListener() {
@@ -38,10 +34,9 @@ public class SocketManager {
             @Override
             public void call(final Object... args) {
                 if (args != null && args.length > 0) {
-                    System.out.println(args[0]);
-                    /*Gson gson = new Gson();
-                    BasePacketModel auth = gson.fromJson(String.valueOf(args[0]), BasePacketModel.class);*/
-                   // socketAuthorized = auth.getSuccess();
+                   Gson gson = new Gson();
+                    BasePacketModel auth = gson.fromJson(String.valueOf(args[0]), BasePacketModel.class);
+                   socketAuthorized = auth.getSuccess();
                     if (!socketAuthorized) {
                       //  String error = auth.getError();
                     } else {
@@ -64,7 +59,6 @@ public class SocketManager {
             socket.on(Socket.EVENT_CONNECT, args -> {
                 authorize(token);
             });
-            socket.on(Socket.EVENT_ERROR, args -> System.out.println(( "Socket error " + Arrays.toString(args))));
             socket.on(AUTH_EVENT, authListener);
         }
     }
