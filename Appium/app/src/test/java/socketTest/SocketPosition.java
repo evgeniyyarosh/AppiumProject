@@ -29,10 +29,9 @@ import socketTest.socketsettings.Timer;
 public class SocketPosition implements SocketManager.TrackerSocketListener {
     private Timer timer;
     private SocketManager socketManager;
-    private static final String TOKEN = "FMcor5urJHeyZTJbicDbht3TNtg0Z0tFu2P7uegUQoaz6Yyj2Kb1muXoweze";
+    private static final String TOKEN = "wAc46kzSfXNOS3V9dmx16ZTKnxmJlmMzvuVfRRNmxkLACkIEVEufD8Xes10Y";
     private HashMap <Integer, EventListener> eventListener;
     private Socket socket;
-
 
     @Before
     public void init(){
@@ -47,15 +46,11 @@ public class SocketPosition implements SocketManager.TrackerSocketListener {
 
         }catch (Exception e){}
         socketManager = new SocketManager(TOKEN, this, socket);
-        Thread.sleep(1000);
+        //Thread.sleep(1000);
         socketManager.socketConnect();
 
-       /* eventListener = new HashMap<>();
-        eventListener.put(BaseEvent.BUS_LOCATION_EVENT,this::busLocation);
-        subscribeOnBusLocationEvent(eventListener);*/
         timer.start();
-        while (!timer.expired(20)){
-
+        while (!timer.expired(5)){
         }
         socketManager.socketDisconnect();
     }
@@ -66,7 +61,6 @@ public class SocketPosition implements SocketManager.TrackerSocketListener {
 
     public void busLocation(BaseEvent<BusLocationEvent> event) {
         BusLocationEvent busLocationEvent = event.getData();
-
         if (busLocationEvent == null) {
             return;
         }

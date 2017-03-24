@@ -38,7 +38,7 @@ public class SocketManager {
                     BasePacketModel auth = gson.fromJson(String.valueOf(args[0]), BasePacketModel.class);
                    socketAuthorized = auth.getSuccess();
                     if (!socketAuthorized) {
-                      //  String error = auth.getError();
+                       String error = auth.getError();
                     } else {
                         listener.onAuthSuccessfully();
                     }
@@ -50,8 +50,6 @@ public class SocketManager {
     public interface TrackerSocketListener {
         void onAuthSuccessfully();
     }
-
-
 
 
     private void subscribeOnSocketEvents() {
