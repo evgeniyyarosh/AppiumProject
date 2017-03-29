@@ -5,5 +5,5 @@ package socketTest.socketsettings;
  */
 
 public class Constants {
-    public static final String BUS_SERVER_URL = "https://traccar.itcraft.i-it.pro:9092";
+    public static final String BUS_SERVER_URL = "http://traccar.itcraft.i-it.pro:9092";
 }

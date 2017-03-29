@@ -1,54 +1,33 @@
 package socketTest.socketsettings;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
-
 import java.util.Arrays;
-
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-import socketTest.events.BaseEvent;
 import socketTest.models.BasePacketModel;
+import socketTest.models.Location;
 
-/**
- * Created by eugene.iarosh on 3/20/2017.
- */
 
 public class SocketManager {
     private static final String AUTH_EVENT = "auth";
     private static final String UPDATE_POSITION_EVENT = "updatePosition";
-    private static final String ROUTE_STATUS_CHANGE_EVENT = "updateBus";
-    private static final String LOCATION_STATISTICS_FOR_PERIOD = "historyByDeltaTime";
-    private static final String USER_ROLE_DRIVER ="driver";
     private boolean socketAuthorized;
     private TrackerSocketListener listener;
     private Emitter.Listener authListener = authSocketListener();
     private String token;
     private Socket socket;
+    private Emitter.Listener locationListener = updatePositionListener();
 
 
-
-    private Emitter.Listener authSocketListener() {
-        return new Emitter.Listener() {
-            @Override
-            public void call(final Object... args) {
-                if (args != null && args.length > 0) {
-                   Gson gson = new Gson();
-                    BasePacketModel auth = gson.fromJson(String.valueOf(args[0]), BasePacketModel.class);
-                   socketAuthorized = auth.getSuccess();
-                    if (!socketAuthorized) {
-                       String error = auth.getError();
-                    } else {
-                        listener.onAuthSuccessfully();
-                    }
-
-                }
-            }
-        };
-    }
     public interface TrackerSocketListener {
         void onAuthSuccessfully();
+    }
+
+
+    private void authorize(String token) {
+        if (socket != null) {
+            socket.emit(AUTH_EVENT, token);
+        }
     }
 
 
@@ -56,22 +35,34 @@ public class SocketManager {
         if (socket != null) {
             socket.on(Socket.EVENT_CONNECT, args -> {
                 authorize(token);
+                System.out.println("Socket EVENT_CONNECT " + args.toString());
+            });
+
+            socket.on(Socket.EVENT_CONNECT_ERROR, args -> {
+                System.out.println("Socket EVENT_CONNECT_ERROR " + args.toString());
+            });
+
+            socket.on(Socket.EVENT_ERROR, args -> {
+                System.out.println("Socket EVENT_ERROR " + args.toString());
+            });
+
+            socket.on(Socket.EVENT_MESSAGE, args -> {
+                System.out.println("Socket EVENT_MESSAGE " + args.toString());
             });
             socket.on(AUTH_EVENT, authListener);
+
+            socket.on(UPDATE_POSITION_EVENT, locationListener);
+        } else {
+            System.out.println("Socket in subscribeOnSocketEvents is NULL ");
         }
     }
-
-    private void authorize(String token) {
-        if (socket != null /*&& !socketAuthorized*/) {
-            socket.emit(AUTH_EVENT, token);
-        }
-    }
-
 
     public void socketConnect() {
         if (socket != null) {
-            subscribeOnSocketEvents();
+            subscribeOnSocketEvents();  //subscribe on events
             socket.connect();
+        } else {
+            System.out.println("Socket in socketConnect is Null");
         }
     }
 
@@ -86,5 +77,36 @@ public class SocketManager {
         this.listener = listener;
         this.token = token;
         this.socket = socket;
+    }
+
+    private Emitter.Listener updatePositionListener() {
+        return args -> {
+            if (args != null && args.length > 0){
+               Gson gson = new Gson();
+                Location location = gson.fromJson(args[0].toString(), Location.class);
+                System.out.println("Socket location" +  Arrays.toString(args));
+            }
+        };
+    }
+
+    private Emitter.Listener authSocketListener() {
+        return new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                if (args != null && args.length > 0) {
+                    System.out.println("Socket auth = " + args[0]);
+                    Gson gson = new Gson();
+                    BasePacketModel auth = gson.fromJson(String.valueOf(args[0]), BasePacketModel.class);
+                    socketAuthorized = auth.getSuccess();
+                    if (!socketAuthorized) {
+                        String error = auth.getError();
+                        System.out.println(this.getClass().getSimpleName() + AUTH_EVENT + " " + error);
+                    } else {
+                        listener.onAuthSuccessfully();
+                    }
+
+                }
+            }
+        };
     }
 }
