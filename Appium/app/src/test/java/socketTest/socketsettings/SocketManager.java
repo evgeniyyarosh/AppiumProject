@@ -18,19 +18,15 @@ public class SocketManager {
     private Socket socket;
     private Emitter.Listener locationListener = updatePositionListener();
 
-
     public interface TrackerSocketListener {
         void onAuthSuccessfully();
     }
-
 
     private void authorize(String token) {
         if (socket != null) {
             socket.emit(AUTH_EVENT, token);
         }
     }
-
-
     private void subscribeOnSocketEvents() {
         if (socket != null) {
             socket.on(Socket.EVENT_CONNECT, args -> {
@@ -101,10 +97,7 @@ public class SocketManager {
                     if (!socketAuthorized) {
                         String error = auth.getError();
                         System.out.println(this.getClass().getSimpleName() + AUTH_EVENT + " " + error);
-                    } else {
-                        listener.onAuthSuccessfully();
-                    }
-
+                    } else {listener.onAuthSuccessfully();}
                 }
             }
         };
